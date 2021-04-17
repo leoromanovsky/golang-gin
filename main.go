@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"log"
 	"net/http"
 	"os"
@@ -11,7 +12,6 @@ import (
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/form3tech-oss/jwt-go"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -109,10 +109,11 @@ func main() {
 	// - GET,POST, PUT, HEAD methods
 	// - Credentials share disabled
 	// - Preflight requests cached for 12 hours
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"https://sleepy-ocean-48386.herokuapp.com"}
-	router.Use(cors.New(config))
-	
+	// config := cors.DefaultConfig()
+	// config.AllowOrigins = []string{"https://sleepy-ocean-48386.herokuapp.com"}
+	// router.Use(cors.New(config))
+	router.Use(cors.Default())
+
 	api := router.Group("/api")
 	{
 		api.GET("/", func(c *gin.Context) {
@@ -125,6 +126,7 @@ func main() {
 	}
 	// Start the app
 	port := os.Getenv("PORT")
+
 	router.Run(fmt.Sprintf(":%s", port))
 }
 
