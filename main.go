@@ -11,7 +11,7 @@ import (
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/form3tech-oss/jwt-go"
-	"github.com/gin-gonic/contrib/static"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -105,9 +105,13 @@ func main() {
 	// Set the router as the default one shipped with Gin
 	router := gin.Default()
 
-	// Serve the frontend
-	router.Use(static.Serve("/", static.LocalFile("./views", true)))
-
+	// - No origin allowed by default
+	// - GET,POST, PUT, HEAD methods
+	// - Credentials share disabled
+	// - Preflight requests cached for 12 hours
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"https://sleepy-ocean-48386.herokuapp.com"}
+	
 	api := router.Group("/api")
 	{
 		api.GET("/", func(c *gin.Context) {
