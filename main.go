@@ -111,6 +111,7 @@ func main() {
 	// - Preflight requests cached for 12 hours
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"https://sleepy-ocean-48386.herokuapp.com"}
+	router.Use(cors.New(config))
 	
 	api := router.Group("/api")
 	{
