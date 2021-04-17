@@ -112,7 +112,12 @@ func main() {
 	// config := cors.DefaultConfig()
 	// config.AllowOrigins = []string{"https://sleepy-ocean-48386.herokuapp.com"}
 	// router.Use(cors.New(config))
-	router.Use(cors.Default())
+	//router.Use(cors.Default())
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowCredentials = true
+	config.AddAllowHeaders("authorization")
+	router.Use(cors.New(config))
 
 	api := router.Group("/api")
 	{
