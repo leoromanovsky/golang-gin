@@ -1,5 +1,5 @@
-const AUTH0_CLIENT_ID = "aIAOt9fkMZKrNsSsFqbKj5KTI0ObTDPP";
-const AUTH0_DOMAIN = "hakaselabs.auth0.com";
+const AUTH0_CLIENT_ID = "GKYZIahwmBv2YHlsHtuQIWMqeT7LowNG";
+const AUTH0_DOMAIN = "leoromanovsky.auth0.com";
 const AUTH0_CALLBACK_URL = location.href;
 const AUTH0_API_AUDIENCE = "golang-gin";
 
@@ -125,7 +125,7 @@ class LoggedIn extends React.Component {
   }
 
   serverRequest() {
-    $.get("http://localhost:3000/api/jokes", res => {
+    $.get("https://fierce-island-45869.herokuapp.com/api/jokes", res => {
       this.setState({
         jokes: res
       });
@@ -174,7 +174,7 @@ class Joke extends React.Component {
   }
   serverRequest(joke) {
     $.post(
-      "http://localhost:3000/api/jokes/like/" + joke.id,
+      "https://fierce-island-45869.herokuapp.com/api/jokes/like/" + joke.id,
       { like: 1 },
       res => {
         console.log("res... ", res);

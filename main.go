@@ -10,7 +10,7 @@ import (
 	"strconv"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
-	jwt "github.com/dgrijalva/jwt-go"
+	jwt "github.com/form3tech-oss/jwt-go"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 )
@@ -59,7 +59,26 @@ var jwtMiddleWare *jwtmiddleware.JWTMiddleware
 func main() {
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+			fmt.Println(token.Claims.(jwt.MapClaims))
+
 			aud := os.Getenv("AUTH0_API_AUDIENCE")
+			claims, ok := token.Claims.(jwt.MapClaims)
+			if !ok {
+				return token, errors.New("invalid claims type")
+			}
+
+			if audienceList, ok := claims["aud"].([]interface{}); ok{
+				auds := make([]string, len(audienceList))
+				for _, aud := range(audienceList) {
+					audStr, ok := aud.(string)
+					if !ok {
+						return token, errors.New("invalid audience type")
+					}
+					auds = append(auds, audStr)
+				}
+				claims["aud"] = auds
+			}
+
 			checkAudience := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
 			if !checkAudience {
 				return token, errors.New("Invalid audience.")
@@ -100,7 +119,8 @@ func main() {
 		api.POST("/jokes/like/:jokeID", authMiddleware(), LikeJoke)
 	}
 	// Start the app
-	router.Run(":3000")
+	port := os.Getenv("PORT")
+	router.Run(fmt.Sprintf(":%s", port))
 }
 
 func getPemCert(token *jwt.Token) (string, error) {
